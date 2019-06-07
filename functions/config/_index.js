@@ -1,31 +1,20 @@
 const config = {
   googleCredentials: require('./serviceAccountKey.json'),
-  functions: {
-    bot: {
+  functions: [
+    {
+      name: '111',
       vk: {
-        groupId: 000,
-        callbackConfirmationString: '000',
-        secretKey: '000',
-        postTags: ['&#13;'],
+        groupId: 111,
+        callbackConfirmationString: '111',
+        secretKey: '111',
+        postTags: ['&#13;', '\r'],
       },
       telegram: {
-        botToken: '000:000',
-        channelId: 000,
+        botToken: '111:111',
+        channelId: 111,
       },
     },
-    test: {
-      vk: {
-        groupId: 000,
-        callbackConfirmationString: '000',
-        secretKey: '000',
-        postTags: ['&#13;'],
-      },
-      telegram: {
-        botToken: '000:000',
-        channelId: 000,
-      },
-    },
-  },
+  ],
 };
 
 module.exports = config;
