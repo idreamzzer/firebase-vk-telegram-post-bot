@@ -7,7 +7,7 @@
 ```
 npm run install
 ```
-- Создать закрытый ключ для сервисного аккаунта в проекте Firebase и заменить файл functions/config/serviceAccountKey.json на скаченный json файл
+- В настройках проекта Firebase создать закрытый ключ для сервисного аккаунта и заменить файл functions/config/serviceAccountKey.json на скаченный json файл
 - Заполнить functions/config/index.js своими данными
 - В проекте Firebase сменить тарифный план на Blaze(Оплата по мере использования)
 ```
