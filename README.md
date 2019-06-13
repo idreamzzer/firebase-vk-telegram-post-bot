@@ -12,5 +12,7 @@ mv functions/config/_index.js functions/config/index.js && mv functions/config/_
 - Заполнить functions/config/index.js своими данными
 - В проекте Firebase сменить тарифный план на Blaze(Оплата по мере использования)
 ```
+firebase list
+firebase use [название вашего проекта]
 firebase deploy --only functions
 ```
