@@ -2,7 +2,7 @@ const config = {
   googleCredentials: require('./serviceAccountKey.json'),
   functions: [
     {
-      name: '111',
+      name: 'test',
       vk: {
         groupId: 111,
         callbackConfirmationString: '111',
