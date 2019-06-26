@@ -4,14 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "install": "cd functions && npm install && cd config && cp index_example.js index.js && cp serviceAccountKey_example.json serviceAccountKey.json && cd ../../"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "dotenv": "^8.0.0",
-    "firebase-admin": "^7.4.0",
-    "firebase-functions": "^2.3.1"
-  }
+  "dependencies": {}
 }
