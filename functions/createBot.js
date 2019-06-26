@@ -36,6 +36,7 @@ function createBot(config) {
     const telegramAPI = new Telegram(telegramConfig.botToken);
     const { type, object: data, group_id } = req.body;
     if (type === 'wall_post_new') {
+      console.log(data);
       let post = data;
 
       if (isPostWithTags(post, vkConfig.postTags)) {
