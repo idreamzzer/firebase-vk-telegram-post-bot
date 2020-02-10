@@ -63,7 +63,17 @@ function createBot(botName, db) {
       );
       console.log(post.text);
 
-      sendPost(post, telegramConfig.channelId, telegramAPI);
+      const preview = getPreviewFromPost(post);
+      if (preview && preview.type && preview.url) {
+        sendPostWithPreview(
+          post,
+          preview,
+          telegramConfig.channelId,
+          telegramAPI
+        );
+      } else {
+        sendPost(post, telegramConfig.channelId, telegramAPI);
+      }
     }
     function sendPostWithTags(post) {
       console.log(
