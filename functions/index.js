@@ -1,12 +1,13 @@
-const admin = require('firebase-admin');
-const functions = require('firebase-functions');
-const config = require('./config');
-const createBot = require('./createBot');
+const admin = require("firebase-admin");
+const functions = require("firebase-functions");
+const config = require("./config");
+const createBot = require("./createBot");
 
 admin.initializeApp({
-  credential: admin.credential.cert(config.googleCredentials),
+  credential: admin.credential.cert(config.googleCredentials)
 });
+const db = admin.firestore();
 
-config.functions.forEach(botConfig => {
-  exports[botConfig.name] = functions.https.onRequest(createBot(botConfig));
+config.bots.forEach(botName => {
+  exports[botName] = functions.https.onRequest(createBot(botName, db));
 });

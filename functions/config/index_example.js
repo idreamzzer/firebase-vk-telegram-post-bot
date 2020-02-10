@@ -1,20 +1,6 @@
 const config = {
-  googleCredentials: require('./serviceAccountKey.json'),
-  functions: [
-    {
-      name: 'test',
-      vk: {
-        groupId: 111,
-        callbackConfirmationString: '111',
-        secretKey: '111',
-        postTags: ['&#13;', '\r'],
-      },
-      telegram: {
-        botToken: '111:111',
-        channelId: 111,
-      },
-    },
-  ],
+  googleCredentials: require("./serviceAccountKey.json"),
+  bots: ["sandbox"]
 };
 
 module.exports = config;
