@@ -124,10 +124,12 @@ async function _sendPreviewLinkAfterText(
 }
 
 function isAllowedAuthor(authorId, authors) {
+  if (!authors) return true;
   return authors.includes(authorId);
 }
 
 function isPostWithTags(post, tags) {
+  if (!tags) return false;
   for (let tag of tags) {
     let regexp = new RegExp(tag);
     if (regexp.test(post.text)) {
