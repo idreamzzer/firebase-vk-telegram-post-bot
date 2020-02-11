@@ -23,7 +23,7 @@ function removeTagsFromPost(post, tags) {
   return post;
 }
 
-function getPreviewFromPost(post) {
+function _getPreviewFromPost(post) {
   if (!post.attachments || !post.attachments.length) return "";
   for (let attach of post.attachments) {
     switch (attach.type) {
@@ -57,7 +57,16 @@ function getPreviewFromPost(post) {
   }
 }
 
-async function sendPost(post, telegramChannelId, telegramAPI) {
+function sendPost(post, telegramChannelId, telegramAPI) {
+  const preview = _getPreviewFromPost(post);
+  if (preview && preview.type && preview.url) {
+    _sendPostWithPreview(post, preview, telegramChannelId, telegramAPI);
+  } else {
+    _sendPost(post, telegramChannelId, telegramAPI);
+  }
+}
+
+async function _sendPost(post, telegramChannelId, telegramAPI) {
   let text = post.text;
   if (text.length > 0) {
     try {
@@ -70,7 +79,7 @@ async function sendPost(post, telegramChannelId, telegramAPI) {
   }
 }
 
-function sendPostWithPreview(post, preview, telegramChannelId, telegramAPI) {
+function _sendPostWithPreview(post, preview, telegramChannelId, telegramAPI) {
   let text = post.text;
   if (text.length <= 1024) {
     _sendPreviewWithCaption(preview, text, telegramChannelId, telegramAPI);
@@ -142,10 +151,8 @@ function isPostWithTags(post, tags) {
 
 module.exports = {
   getBotByName,
-  getPreviewFromPost,
   isPostWithTags,
   removeTagsFromPost,
   sendPost,
-  sendPostWithPreview,
   isAllowedAuthor
 };

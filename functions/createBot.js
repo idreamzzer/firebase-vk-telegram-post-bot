@@ -46,55 +46,21 @@ function createBot(botName, db) {
 
     if (type === "wall_post_new") {
       let post = data;
+
+      // If there are denied tags
       if (!isPostWithTags(post, vkConfig.deniedTags)) {
+        // If authors are allowed
         if (isAllowedAuthor(post.created_by, vkConfig.allowedAuthors)) {
-          sendPostNoTags(post);
+          sendPost(post, telegramConfig.channelId, telegramAPI);
+          // if post with allowed tags
         } else if (isPostWithTags(post, vkConfig.postTags)) {
-          sendPostWithTags(post);
+          post = removeTagsFromPost(post, vkConfig.postTags);
+          sendPost(post, telegramConfig.channelId, telegramAPI);
         }
       }
     }
 
     res.send("ok");
-
-    // senders
-    function sendPostNoTags(post) {
-      console.log(
-        `~~~ NEW POST IN: ${botName}(${group_id}) BY ${post.created_by} ~~~`
-      );
-      console.log(post.text);
-
-      const preview = getPreviewFromPost(post);
-      if (preview && preview.type && preview.url) {
-        sendPostWithPreview(
-          post,
-          preview,
-          telegramConfig.channelId,
-          telegramAPI
-        );
-      } else {
-        sendPost(post, telegramConfig.channelId, telegramAPI);
-      }
-    }
-    function sendPostWithTags(post) {
-      console.log(
-        `~~~ NEW POST WITH TAGS IN: ${botName}(${group_id}) BY ${post.created_by} ~~~`
-      );
-      console.log(post.text);
-
-      post = removeTagsFromPost(post, vkConfig.postTags);
-      const preview = getPreviewFromPost(post);
-      if (preview && preview.type && preview.url) {
-        sendPostWithPreview(
-          post,
-          preview,
-          telegramConfig.channelId,
-          telegramAPI
-        );
-      } else {
-        sendPost(post, telegramConfig.channelId, telegramAPI);
-      }
-    }
   });
   return app;
 }
