@@ -130,9 +130,10 @@ function isAllowedAuthor(authorId, authors) {
 
 function isPostWithTags(post, tags) {
   if (!tags) return false;
+  const loweredText = post.text.toLowerCase();
   for (let tag of tags) {
-    let regexp = new RegExp(tag);
-    if (regexp.test(post.text)) {
+    let regexp = new RegExp(tag.toLowerCase());
+    if (regexp.test(loweredText)) {
       return true;
     }
   }
