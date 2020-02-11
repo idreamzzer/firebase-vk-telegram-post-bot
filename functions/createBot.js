@@ -46,11 +46,12 @@ function createBot(botName, db) {
 
     if (type === "wall_post_new") {
       let post = data;
-
-      if (isAllowedAuthor(post.created_by, vkConfig.allowedAuthors)) {
-        sendPostNoTags(post);
-      } else if (isPostWithTags(post, vkConfig.postTags)) {
-        sendPostWithTags(post);
+      if (!isPostWithTags(post, vkConfig.deniedTags)) {
+        if (isAllowedAuthor(post.created_by, vkConfig.allowedAuthors)) {
+          sendPostNoTags(post);
+        } else if (isPostWithTags(post, vkConfig.postTags)) {
+          sendPostWithTags(post);
+        }
       }
     }
 
