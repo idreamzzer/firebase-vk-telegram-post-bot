@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "install": "cd functions && npm install && cd config && cp index_example.js index.js && cp serviceAccountKey_example.json serviceAccountKey.json && cd ../../"
+    "install": "cd functions && npm install && cd config && cp serviceAccountKey_example.json serviceAccountKey.json && cd ../../"
   },
   "keywords": [],
   "author": "",
