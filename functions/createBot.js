@@ -8,10 +8,9 @@ const {
   getBotByName,
   isPostWithTags,
   removeTagsFromPost,
-  getPreviewFromPost,
   sendPost,
-  sendPostWithPreview,
-  isAllowedAuthor
+  isAllowedAuthor,
+  isVideoInPost
 } = require("./utils");
 
 function createBot(botName, db) {
@@ -20,9 +19,20 @@ function createBot(botName, db) {
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(bodyParser.json());
   app.post("/", async (req, res) => {
-    const config = await getBotByName(db, botName);
-    const { vk: vkConfig, telegram: telegramConfig } = config;
-    console.log(`Bot config`, config);
+    // getting config
+    let vkConfig = {};
+    let telegramConfig = {};
+    try {
+      const config = await getBotByName(db, botName);
+      vkConfig = config.vk;
+      telegramConfig = config.telegram;
+      console.log(`Bot config`, config);
+    } catch (error) {
+      console.error("Couldn't get config");
+      console.error(error);
+      res.send("Couldn't get config");
+      return;
+    }
 
     // confirmation
     if (req.body.secret !== vkConfig.secretKey) {
@@ -49,13 +59,16 @@ function createBot(botName, db) {
 
       // If there are denied tags
       if (!isPostWithTags(post, vkConfig.deniedTags)) {
-        // If authors are allowed
-        if (isAllowedAuthor(post.created_by, vkConfig.allowedAuthors)) {
-          sendPost(post, telegramConfig.channelId, telegramAPI);
-          // if post with allowed tags
-        } else if (isPostWithTags(post, vkConfig.postTags)) {
-          post = removeTagsFromPost(post, vkConfig.postTags);
-          sendPost(post, telegramConfig.channelId, telegramAPI);
+        // If no video in post
+        if (!isVideoInPost(post)) {
+          // If authors are allowed
+          if (isAllowedAuthor(post.created_by, vkConfig.allowedAuthors)) {
+            sendPost(post, telegramConfig.channelId, telegramAPI);
+            // if post with allowed tags
+          } else if (isPostWithTags(post, vkConfig.postTags)) {
+            post = removeTagsFromPost(post, vkConfig.postTags);
+            sendPost(post, telegramConfig.channelId, telegramAPI);
+          }
         }
       }
     }

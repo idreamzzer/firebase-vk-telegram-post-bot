@@ -49,6 +49,9 @@ function _getPreviewFromPost(post) {
           console.error(doc);
           return "";
         }
+      case "video":
+        console.error("Unhandled attachment video type extention");
+        return "";
       default:
         console.error(`Unhandled attachment type`);
         console.error(attach);
@@ -149,10 +152,16 @@ function isPostWithTags(post, tags) {
   return false;
 }
 
+function isVideoInPost(post) {
+  if (!post.attachments || !post.attachments.length) return false;
+  return !!post.attachments.find(attach => attach.type === "video");
+}
+
 module.exports = {
   getBotByName,
   isPostWithTags,
   removeTagsFromPost,
   sendPost,
-  isAllowedAuthor
+  isAllowedAuthor,
+  isVideoInPost
 };
