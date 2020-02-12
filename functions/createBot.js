@@ -5,72 +5,72 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const Telegram = require("node-telegram-bot-api");
 const {
-  getBotByName,
+  getConfigByName,
   isPostWithTags,
   removeTagsFromPost,
   sendPost,
   isAllowedAuthor,
-  isVideoInPost
+  isVideoInPost,
+  vkConfirm
 } = require("./utils");
+const Post = require("./Post");
 
 function createBot(botName, db) {
+  // express settings
   const app = express();
   app.use(cors({ origin: true }));
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(bodyParser.json());
+
   app.post("/", async (req, res) => {
+    let data = req.body;
+    let config = null;
+
     // getting config
-    let vkConfig = {};
-    let telegramConfig = {};
-    try {
-      const config = await getBotByName(db, botName);
-      vkConfig = config.vk;
-      telegramConfig = config.telegram;
-      console.log(`Bot config`, config);
-    } catch (error) {
-      console.error("Couldn't get config");
-      console.error(error);
-      res.send("Couldn't get config");
-      return;
-    }
+    // try {
+    //   config = await getConfigByName(botName, db);
+    //   console.log(`Bot config`, config);
+    // } catch (error) {
+    //   console.error("Couldn't get config");
+    //   console.error(error);
+    //   res.send("Couldn't get config");
+    //   return;
+    // }
+
+    // development
+    const dummyData = require("./test/dummy/data");
+    config = require("./test/dummy/config");
+    data = dummyData.postAllowedTag;
+
+    console.log(config);
+    console.log(data);
 
     // confirmation
-    if (req.body.secret !== vkConfig.secretKey) {
-      console.log("Wrong secret");
-      res.send("wrong secret");
-      return;
-    }
-    if (
-      req.body.type == "confirmation" &&
-      req.body.group_id == vkConfig.groupId
-    ) {
-      console.log("Confirmation successful");
-      res.send(vkConfig.callbackConfirmationString);
+    try {
+      vkConfirm(data, config, res);
+    } catch (error) {
       return;
     }
 
     // main
-    const telegramAPI = new Telegram(telegramConfig.botToken);
-    const { type, object: data, group_id } = req.body;
-    console.log("Request data", data);
-
-    if (type === "wall_post_new") {
-      let post = data;
+    if (data.type === "wall_post_new") {
+      const post = new Post(data.object, config);
+      post.checkConditions();
 
       // If there are denied tags
-      if (!isPostWithTags(post, vkConfig.deniedTags)) {
-        // If no video in post
-        if (!isVideoInPost(post)) {
-          // If authors are allowed
-          if (isAllowedAuthor(post.created_by, vkConfig.allowedAuthors)) {
-            sendPost(post, telegramConfig.channelId, telegramAPI);
-            // if post with allowed tags
-          } else if (isPostWithTags(post, vkConfig.postTags)) {
-            post = removeTagsFromPost(post, vkConfig.postTags);
-            sendPost(post, telegramConfig.channelId, telegramAPI);
-          }
-        }
-      }
+      // if (!isPostWithTags(post, config.vk.deniedTags)) {
+      //   // If no video in post
+      //   if (!isVideoInPost(post)) {
+      //     // If authors are allowed
+      //     if (isAllowedAuthor(post.created_by, config.vk.allowedAuthors)) {
+      //       sendPost(post, config.telegram.channelId, telegramAPI);
+      //       // if post with allowed tags
+      //     } else if (isPostWithTags(post, config.vk.postTags)) {
+      //       post = removeTagsFromPost(post, config.vk.postTags);
+      //       sendPost(post, config.telegram.channelId, telegramAPI);
+      //     }
+      //   }
+      // }
     }
 
     res.send("ok");
