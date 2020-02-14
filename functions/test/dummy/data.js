@@ -531,6 +531,29 @@ const postAllowedTag = {
   event_id: "aea58390971d8e9b752546b24073ad30c4fad6f2",
   secret: "secret"
 };
+const postAllowedTagAndDeniedTag = {
+  type: "wall_post_new",
+  object: {
+    id: 149,
+    from_id: -22222,
+    owner_id: -22222,
+    date: 1581499900,
+    marked_as_ads: 0,
+    post_type: "post",
+    text: "postAllowedTag someallowedtag",
+    signer_id: 11111,
+    can_edit: 1,
+    created_by: 11111,
+    can_delete: 1,
+    comments: {
+      count: 0
+    },
+    is_favorite: false
+  },
+  group_id: 22222,
+  event_id: "aea58390971d8e9b752546b24073ad30c4fad6f2",
+  secret: "secret"
+};
 const postDeniedTag = {
   type: "wall_post_new",
   object: {
@@ -587,9 +610,184 @@ const postDeniedAuthor = {
     marked_as_ads: 0,
     post_type: "post",
     text: "postDeniedAuthor",
-    signer_id: 464733097,
+    signer_id: 99999,
     can_edit: 1,
-    created_by: 464733097,
+    created_by: 99999,
+    can_delete: 1,
+    comments: {
+      count: 0
+    },
+    is_favorite: false
+  },
+  group_id: 22222,
+  event_id: "b20f238804e63e8930ef196be329ffe390286abe",
+  secret: "secret"
+};
+
+const postDeniedAuthorWithAllowedTag = {
+  type: "wall_post_new",
+  object: {
+    id: 147,
+    from_id: -22222,
+    owner_id: -22222,
+    date: 1581499766,
+    marked_as_ads: 0,
+    post_type: "post",
+    text: "postDeniedAuthor someallowedtag",
+    signer_id: 99999,
+    can_edit: 1,
+    created_by: 99999,
+    can_delete: 1,
+    comments: {
+      count: 0
+    },
+    is_favorite: false
+  },
+  group_id: 22222,
+  event_id: "b20f238804e63e8930ef196be329ffe390286abe",
+  secret: "secret"
+};
+
+const postLongWithPicture = {
+  type: "wall_post_new",
+  object: {
+    id: 143,
+    from_id: -22222,
+    owner_id: -22222,
+    date: 1581499677,
+    marked_as_ads: 0,
+    post_type: "post",
+    text:
+      "postLongWithPicture Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+    signer_id: 11111,
+    can_edit: 1,
+    created_by: 11111,
+    can_delete: 1,
+    attachments: [
+      {
+        type: "photo",
+        photo: {
+          id: 457243812,
+          album_id: -7,
+          owner_id: 11111,
+          sizes: [
+            {
+              type: "m",
+              url:
+                "https://sun9-5.userapi.com/c205128/v205128105/39c06/kTB6Oc7H2jE.jpg",
+              width: 130,
+              height: 93
+            },
+            {
+              type: "o",
+              url:
+                "https://sun9-27.userapi.com/c205128/v205128105/39c0a/VzFdu95_sKc.jpg",
+              width: 130,
+              height: 93
+            },
+            {
+              type: "p",
+              url:
+                "https://sun9-7.userapi.com/c205128/v205128105/39c0b/u5oYOZj-gn4.jpg",
+              width: 200,
+              height: 143
+            },
+            {
+              type: "q",
+              url:
+                "https://sun9-66.userapi.com/c205128/v205128105/39c0c/OmSVKDzro34.jpg",
+              width: 320,
+              height: 229
+            },
+            {
+              type: "r",
+              url:
+                "https://sun9-67.userapi.com/c205128/v205128105/39c0d/PzFpYmdS9x4.jpg",
+              width: 510,
+              height: 365
+            },
+            {
+              type: "s",
+              url:
+                "https://sun9-43.userapi.com/c205128/v205128105/39c05/xTHhwmzolHQ.jpg",
+              width: 75,
+              height: 54
+            },
+            {
+              type: "x",
+              url:
+                "https://sun9-35.userapi.com/c205128/v205128105/39c07/sYFYHtaG5mY.jpg",
+              width: 604,
+              height: 433
+            },
+            {
+              type: "y",
+              url:
+                "https://sun9-54.userapi.com/c205128/v205128105/39c08/OJUeauSUbAI.jpg",
+              width: 807,
+              height: 578
+            },
+            {
+              type: "z",
+              url:
+                "https://sun9-8.userapi.com/c205128/v205128105/39c09/-XXZYob5QUs.jpg",
+              width: 1024,
+              height: 733
+            }
+          ],
+          text: "",
+          date: 1579039148,
+          access_key: "cf3e4595d44cb7bb99"
+        }
+      }
+    ],
+    comments: {
+      count: 0
+    },
+    is_favorite: false
+  },
+  group_id: 22222,
+  event_id: "a7bdf9a707ba8fe5c39097859c8b8572195f2694",
+  secret: "secret"
+};
+
+const postUnknownAuthor = {
+  type: "wall_post_new",
+  object: {
+    id: 147,
+    from_id: -22222,
+    owner_id: -22222,
+    date: 1581499766,
+    marked_as_ads: 0,
+    post_type: "post",
+    text: "postUnknownAuthor",
+    signer_id: 67777788,
+    can_edit: 1,
+    created_by: 67777788,
+    can_delete: 1,
+    comments: {
+      count: 0
+    },
+    is_favorite: false
+  },
+  group_id: 22222,
+  event_id: "b20f238804e63e8930ef196be329ffe390286abe",
+  secret: "secret"
+};
+
+const postUnknownAuthorWithAllowedTag = {
+  type: "wall_post_new",
+  object: {
+    id: 147,
+    from_id: -22222,
+    owner_id: -22222,
+    date: 1581499766,
+    marked_as_ads: 0,
+    post_type: "post",
+    text: "postUnknownAuthor someallowedtag",
+    signer_id: 67777788,
+    can_edit: 1,
+    created_by: 67777788,
     can_delete: 1,
     comments: {
       count: 0
@@ -608,8 +806,8 @@ module.exports = {
   postPicture,
   postVideo,
   postPictureAndVideo,
-  postAllowedTag,
-  postDeniedTag,
   postAllowedAuthor,
-  postDeniedAuthor
+  postDeniedAuthor,
+  postLongWithPicture,
+  postUnknownAuthor
 };
