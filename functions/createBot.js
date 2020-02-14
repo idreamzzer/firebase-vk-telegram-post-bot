@@ -16,19 +16,14 @@ function createBot(botName, db) {
     let config = null;
 
     // getting config
-    // try {
-    //   config = await getConfigByName(botName, db);
-    // } catch (error) {
-    //   console.error("Couldn't get config");
-    //   console.error(error);
-    //   res.send("Couldn't get config");
-    //   return;
-    // }
-
-    // development
-    const dummyData = require("./test/dummy/data");
-    config = require("./test/dummy/config");
-    data = dummyData.postUnknownAuthor;
+    try {
+      config = await getConfigByName(botName, db);
+    } catch (error) {
+      console.error("Couldn't get config");
+      console.error(error);
+      res.send("Couldn't get config");
+      return;
+    }
 
     console.log("config: ", config);
     console.log("data: ", data);
@@ -44,9 +39,8 @@ function createBot(botName, db) {
     if (data.type === "wall_post_new") {
       const post = new Post(data.object, config);
       if (post.isAllowedToSend()) {
-        console.log("allowed to send");
         post.format();
-        // post.send();
+        post.send();
       }
     }
 

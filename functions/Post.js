@@ -4,7 +4,7 @@ const Telegram = require("node-telegram-bot-api");
 class Post {
   constructor(post, config) {
     this.config = config;
-    this.restrictions = config.restrictions;
+    this.restrictions = config.restrictions || {};
     this.post = post;
     this.telegramApi = new Telegram(config.telegram.botToken);
     this.preview = null;
@@ -144,9 +144,15 @@ class Post {
     return null;
   }
   _removeTagsFromText(text) {
+    const { allowedTags, deniedTags } = this.restrictions;
+    if (!allowedTags && !deniedTags) return text.trim();
     const tags = [
-      ...this.restrictions.allowedTags,
-      ...this.restrictions.deniedTags
+      ...(Array.isArray(this.restrictions.allowedTags)
+        ? this.restrictions.allowedTags
+        : ""),
+      ...(Array.isArray(this.restrictions.deniedTags)
+        ? this.restrictions.deniedTags
+        : "")
     ];
     if (!tags) return text;
     let newText = text;
