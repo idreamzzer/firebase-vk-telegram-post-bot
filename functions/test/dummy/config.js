@@ -2,8 +2,8 @@ module.exports = {
   name: "sandbox",
   vk: {
     callbackString: "12345678",
-    groupId: 22222,
-    secretKey: "secret"
+    groupId: 11111,
+    secret: "secret"
   },
   telegram: {
     botToken: "123123123123:QdsaFQWFUhqfiu1231hdiaufsdf",

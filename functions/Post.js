@@ -15,7 +15,7 @@ class Post {
   isAllowedToSend() {
     if (this._hasVideoInPost()) {
       // console.log("video in post");
-      return !this.restrictions.denyVideoPost;
+      return !this.restrictions.denyVideo;
     }
     if (this._hasTags("allowedTags")) {
       // console.log("allowed tags");
@@ -72,6 +72,7 @@ class Post {
     }
   }
 
+  // for testing
   getData() {
     const { preview, message } = this;
     return {

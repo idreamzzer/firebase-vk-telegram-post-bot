@@ -1,4 +1,6 @@
-function getConfigByName(botName, db) {
+const { db } = require("./api/firebase");
+
+function getConfigByName(botName) {
   const bots = db.collection("bots");
   return new Promise((resolve, reject) => {
     bots
@@ -6,8 +8,8 @@ function getConfigByName(botName, db) {
       .get()
       .then(snap => {
         if (snap.empty) {
-          console.log("No matching bots.");
-          reject("No matching bots.");
+          console.log("No matching bots");
+          reject("No matching bots");
         }
         snap.forEach(doc => {
           resolve(doc.data());
@@ -17,22 +19,22 @@ function getConfigByName(botName, db) {
   });
 }
 
-function vkConfirm(data, config, response) {
-  if (data.secret !== config.vk.secretKey) {
-    let msg = "Wrong secret";
-    console.error(msg);
-    response.send(msg);
-    throw msg;
+function vkSecret(data, config) {
+  if (data.secret !== config.vk.secret) {
+    return null;
   }
+  return true;
+}
+
+function vkConfirm(data, config) {
   if (data.type == "confirmation" && data.group_id == config.vk.groupId) {
-    let msg = "Confirmation successful";
-    console.log(msg);
-    response.send(config.vk.callbackConfirmationString);
-    throw msg;
+    return config.vk.callbackString;
   }
+  return null;
 }
 
 module.exports = {
+  vkSecret,
   vkConfirm,
   getConfigByName
 };
