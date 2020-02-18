@@ -36,6 +36,9 @@ function createBot(botName, config) {
       return;
     }
 
+    console.log(data);
+    console.log(config);
+
     // main
     if (data.type === "wall_post_new") {
       const post = new Post(data.object, config);

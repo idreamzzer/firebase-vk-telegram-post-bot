@@ -35,6 +35,7 @@ class Post {
     }
     if (Boolean(this.restrictions.restrictedPosts)) {
       // console.log("restricted post");
+      // console.log(this.restrictions.restrictedPosts);
       return false;
     }
     return true;
