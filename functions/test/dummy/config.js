@@ -14,7 +14,7 @@ module.exports = {
   //   allowedTags: ["allowedTag", "allowedTag2"],
   //   deniedTags: ["deniedTag"],
   //   deniedAuthors: [99999],
-  //   denyVideoPost: true,
+  //   denyVideo: true,
   //   restrictedPosts: true
   // }
 };

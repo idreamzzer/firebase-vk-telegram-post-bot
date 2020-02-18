@@ -96,6 +96,7 @@ describe("Creating Post", () => {
 
     it("If allowed tags in post", () => {
       const post = getPost();
+      post.created_by = unknownAuthors[0];
       post.text = `post ${allowedTags[0]}`;
       const result = makePostAndGetData(post, { allowedTags });
       const expected = defaultExpected;
