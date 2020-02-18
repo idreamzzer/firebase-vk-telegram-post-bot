@@ -73,14 +73,27 @@ describe("Bot requests", () => {
 });
 
 describe("Configs", () => {
+  it("config/index.js should exists and return config with bots name and google credentials", () => {
+    expect(require("../config/index")).to.include.all.keys([
+      "googleCredentials",
+      "bots"
+    ]);
+  });
   it("Should return config from database", done => {
-    utils.getConfigByName(defaultConfig.name).then(config => {
-      // expect(config).to.have.keys(["name", "vk", "telegram"]);
-      expect(config.name).to.equal(defaultConfig.name);
-      expect(config.vk).to.have.keys(["callbackString", "secret", "groupId"]);
-      expect(config.telegram).to.have.keys(["channelId", "botToken"]);
-      done();
+    const conf = require("../config/index");
+    conf.bots.forEach(botName => {
+      utils.getConfigByName(botName).then(config => {
+        expect(config).to.include.all.keys(["name", "vk", "telegram"]);
+        expect(config.name).to.equal(botName);
+        expect(config.vk).to.include.all.keys([
+          "callbackString",
+          "secret",
+          "groupId"
+        ]);
+        expect(config.telegram).to.include.all.keys(["channelId", "botToken"]);
+      });
     });
+    done();
   });
 });
 
