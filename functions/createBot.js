@@ -41,11 +41,13 @@ function createBot(botName, config) {
 
     // main
     if (data.type === "wall_post_new") {
+      res.send("ok");
       const post = new Post(data.object, config);
       if (post.isAllowedToSend()) {
         post.format();
         post.send();
       }
+      return;
     }
 
     res.send("ok");
