@@ -1,4 +1,12 @@
-const { db } = require("./api/firebase");
+const {
+  db
+} = require("./api/firebase");
+const {
+  debug,
+  info,
+  error,
+  warn
+} = require("firebase-functions/lib/logger");
 
 function getConfigByName(botName) {
   const bots = db.collection("bots");
@@ -8,7 +16,7 @@ function getConfigByName(botName) {
       .get()
       .then(snap => {
         if (snap.empty) {
-          console.log("No matching bots");
+          warn("No matching bots");
           reject("No matching bots");
         }
         snap.forEach(doc => {
@@ -33,8 +41,28 @@ function vkConfirm(data, config) {
   return null;
 }
 
+function checkEventId(eventId) {
+  const events = db.collection('temp_events');
+  return new Promise((resolve, reject) => {
+    events
+      .where("id", "==", eventId)
+      .get()
+      .then(async (snap) => {
+        if (snap.empty) {
+          await events.add({
+            id: eventId
+          });
+          resolve(true);
+        }
+        warn('duplication');
+        resolve(false);
+      }).catch(error => reject(error))
+  });
+}
+
 module.exports = {
   vkSecret,
   vkConfirm,
-  getConfigByName
+  getConfigByName,
+  checkEventId
 };
