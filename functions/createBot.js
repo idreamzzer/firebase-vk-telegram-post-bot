@@ -1,14 +1,22 @@
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const { getConfigByName, vkConfirm, vkSecret } = require("./utils");
+const {
+  getConfigByName,
+  vkConfirm,
+  vkSecret
+} = require("./utils");
 const Post = require("./Post");
 
 function createBot(botName, config) {
   // express settings
   const app = express();
-  app.use(cors({ origin: true }));
-  app.use(bodyParser.urlencoded({ extended: false }));
+  app.use(cors({
+    origin: true
+  }));
+  app.use(bodyParser.urlencoded({
+    extended: false
+  }));
   app.use(bodyParser.json());
 
   app.post("/", async (req, res) => {
@@ -36,8 +44,8 @@ function createBot(botName, config) {
       return;
     }
 
-    console.log(data);
-    console.log(config);
+    // console.log(data);
+    // console.log(config);
 
     // main
     if (data.type === "wall_post_new") {

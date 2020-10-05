@@ -6,3 +6,4 @@ functions/config/index.js
 functions/config/serviceAccountKey.json
 .firebaserc
 firebase-debug.log
+debug.log

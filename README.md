@@ -14,6 +14,8 @@ npm run install
 - В проекте Firebase на сайте сменить тарифный план на Blaze(Оплата по мере использования)
 
 ```
+npm install -g firebase-tools // if Firebase CLI is not installed
+firebase login // if Firebase CLI is not installed
 firebase projects:list
 firebase use [Project ID]
 firebase deploy --only functions
