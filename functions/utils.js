@@ -29,6 +29,7 @@ function getConfigByName(botName) {
 
 function vkSecret(data, config) {
   if (data.secret !== config.vk.secret) {
+    error("wrong secret", data.secret, config.vk.secret);
     return null;
   }
   return true;
