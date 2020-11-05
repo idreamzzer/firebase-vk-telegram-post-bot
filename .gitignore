@@ -7,3 +7,6 @@ functions/config/serviceAccountKey.json
 .firebaserc
 firebase-debug.log
 debug.log
+pubsub-debug.log
+ui-debug.log
+firestore-debug.log
