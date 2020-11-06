@@ -1,12 +1,5 @@
-const {
-  db
-} = require("./api/firebase");
-const {
-  debug,
-  info,
-  error,
-  warn
-} = require("firebase-functions/lib/logger");
+const { db } = require("./api/firebase");
+const { debug, info, error, warn } = require("firebase-functions/lib/logger");
 
 function getConfigByName(botName) {
   const bots = db.collection("bots");
@@ -14,16 +7,16 @@ function getConfigByName(botName) {
     bots
       .where("name", "==", botName)
       .get()
-      .then(snap => {
+      .then((snap) => {
         if (snap.empty) {
           warn("No matching bots");
           reject("No matching bots");
         }
-        snap.forEach(doc => {
+        snap.forEach((doc) => {
           resolve(doc.data());
         });
       })
-      .catch(error => reject(error));
+      .catch((error) => reject(error));
   });
 }
 
@@ -42,8 +35,26 @@ function vkConfirm(data, config) {
   return null;
 }
 
+function getRestrictions(botName) {
+  const bots = db.collection("bots");
+  return new Promise((resolve, reject) => {
+    bots
+      .where("name", "==", botName)
+      .get()
+      .then((snap) => {
+        if (snap.empty) {
+          resolve();
+        }
+        snap.forEach((bot) => {
+          resolve(bot.data().restrictions);
+        });
+      })
+      .catch((error) => reject(error));
+  });
+}
+
 function checkEventId(eventId) {
-  const events = db.collection('temp_events');
+  const events = db.collection("temp_events");
   return new Promise((resolve, reject) => {
     events
       .where("id", "==", eventId)
@@ -51,13 +62,14 @@ function checkEventId(eventId) {
       .then(async (snap) => {
         if (snap.empty) {
           await events.add({
-            id: eventId
+            id: eventId,
           });
           resolve(true);
         }
-        warn('duplication');
+        warn("duplication");
         resolve(false);
-      }).catch(error => reject(error))
+      })
+      .catch((error) => reject(error));
   });
 }
 
@@ -65,5 +77,6 @@ module.exports = {
   vkSecret,
   vkConfirm,
   getConfigByName,
-  checkEventId
+  checkEventId,
+  getRestrictions,
 };

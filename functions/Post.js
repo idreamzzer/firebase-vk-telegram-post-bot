@@ -2,9 +2,9 @@ process.env.NTBA_FIX_319 = 1;
 const Telegram = require("node-telegram-bot-api");
 
 class Post {
-  constructor(post, config) {
+  constructor(post, config, restrictions) {
     this.config = config;
-    this.restrictions = config.restrictions || {};
+    this.restrictions = restrictions || {};
     this.post = post;
     this.telegramApi = new Telegram(config.telegram.botToken);
     this.preview = null;
@@ -14,28 +14,27 @@ class Post {
 
   isAllowedToSend() {
     if (this._hasVideoInPost()) {
-      // console.log("video in post");
+      console.log("video in post");
       return !this.restrictions.denyVideo;
     }
     if (this._hasTags("allowedTags")) {
-      // console.log("allowed tags");
+      console.log("allowed tags");
       return true;
     }
     if (this._hasTags("deniedTags")) {
-      // console.log("denied tags");
+      console.log("denied tags");
       return false;
     }
     if (this._hasAuthor("deniedAuthors")) {
-      // console.log("denied authors");
+      console.log("denied authors");
       return false;
     }
     if (this._hasAuthor("allowedAuthors")) {
-      // console.log("allowed authors");
+      console.log("allowed authors");
       return true;
     }
     if (Boolean(this.restrictions.restrictedPosts)) {
-      // console.log("restricted post");
-      // console.log(this.restrictions.restrictedPosts);
+      console.log("restricted post");
       return false;
     }
     return true;
@@ -51,7 +50,7 @@ class Post {
   async send() {
     const channelId = -this.config.telegram.channelId;
     const options = {
-      parse_mode: "HTML"
+      parse_mode: "HTML",
     };
     const message = this.message;
 
@@ -78,13 +77,13 @@ class Post {
     const { preview, message } = this;
     return {
       preview,
-      message
+      message,
     };
   }
 
   _getMaxSizePhotoUrl(photo) {
     return photo.sizes.find(
-      size => size.width === Math.max(...photo.sizes.map(s => s.width), 0)
+      (size) => size.width === Math.max(...photo.sizes.map((s) => s.width), 0)
     ).url;
   }
   _hasAuthor(type) {
@@ -96,7 +95,7 @@ class Post {
   _hasPreview() {
     if (!this.post.attachments) return false;
     return !!this.post.attachments.find(
-      attach =>
+      (attach) =>
         attach.type === "photo" ||
         (attach.type === "doc" && attach.doc.ext === "gif")
     );
@@ -134,12 +133,12 @@ class Post {
       if (attachment.type === "photo") {
         return {
           type: attachment.type,
-          url: this._getMaxSizePhotoUrl(attachment.photo)
+          url: this._getMaxSizePhotoUrl(attachment.photo),
         };
       } else if (attachment.type === "doc" && attachment.doc.ext === "gif") {
         return {
           type: attachment.type,
-          url: attachment.doc.url
+          url: attachment.doc.url,
         };
       }
     }
@@ -154,7 +153,7 @@ class Post {
         : ""),
       ...(Array.isArray(this.restrictions.deniedTags)
         ? this.restrictions.deniedTags
-        : "")
+        : ""),
     ];
     if (!tags) return text;
     let newText = text;
