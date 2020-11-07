@@ -13,7 +13,7 @@ async function forwardPost(post, botConfig) {
       await telegram.sendMessageWithMultiplePhotos(post.text, photosUrl);
     } else if (photosUrl.length === 1) {
       await telegram.sendMessageWithPhoto(post.text, photosUrl[0]);
-    } else {
+    } else if (post.text) {
       await telegram.sendLongMessage(post.text);
     }
     return;

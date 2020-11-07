@@ -31,13 +31,17 @@ function createBot(botConfig) {
       return null;
     }
     if (data.type == "confirmation" && data.group_id == botConfig.vk.groupId) {
-      return botConfig.vk.callbackString;
+      info("confirmation");
+      debug(data);
+      debug(botConfig);
+      res.send(botConfig.vk.callbackString);
+      return null;
     }
 
-    // debug(botConfig);
-    // debug(data);
-
     if (data.type === "wall_post_new") {
+      info("new post");
+      debug(data);
+      debug(botConfig);
       const post = data.object;
       if (
         (await isPostUnique(post)) &&
