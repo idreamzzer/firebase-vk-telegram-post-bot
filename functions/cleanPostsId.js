@@ -2,8 +2,8 @@ const { db } = require("./api/firebase");
 const { info } = require("firebase-functions/lib/logger");
 
 async function cleanPostsId(context) {
-  await deleteCollection(db, "temp_events", 100);
-  info("cleaned events");
+  await deleteCollection(db, "postsId", 100);
+  info("cleaned posts id");
   return null;
 }
 
