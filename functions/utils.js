@@ -1,5 +1,6 @@
 const { db } = require("./api/firebase");
 const { debug, info, error, warn } = require("firebase-functions/lib/logger");
+const chunk = require("chunk-text");
 
 function isPostUnique(post) {
   const postsIdCollection = db.collection("postsId");
@@ -90,15 +91,14 @@ function getPhotosUrlFromAttachments(attachments) {
     );
 }
 
-function chunkSubstr(str, size) {
-  const numChunks = Math.ceil(str.length / size);
-  const chunks = new Array(numChunks);
-
-  for (let i = 0, o = 0; i < numChunks; ++i, o += size) {
-    chunks[i] = str.substr(o, size);
+function chunkSubstr(str, size, firstElementSize) {
+  str = str.trim();
+  if (firstElementSize) {
+    let firstElementSizeChunks = chunk(str, firstElementSize);
+    let mainChunks = chunk(firstElementSizeChunks.slice(1).join(" "), size);
+    return [firstElementSizeChunks[0], ...mainChunks];
   }
-
-  return chunks;
+  return chunk(str, size);
 }
 
 module.exports = {
