@@ -1,13 +1,5 @@
 node_modules
 .env
-functions/node_modules
-functions/.env
-functions/config/index.js
-functions/config/serviceAccountKey.json
 .firebaserc
-firebase-debug.log
-debug.log
-pubsub-debug.log
-ui-debug.log
-firestore-debug.log
 todo.md
+*.log
