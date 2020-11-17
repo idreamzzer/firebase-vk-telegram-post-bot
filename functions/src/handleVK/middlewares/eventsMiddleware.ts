@@ -1,6 +1,5 @@
 import express from "express";
-import { WallAttachment, API, Attachment } from "vk-io";
-// import { db } from "../../api/firebase";
+import { db } from "../../api/firebase";
 
 async function eventsMiddleware(
   req: express.Request,
@@ -9,15 +8,24 @@ async function eventsMiddleware(
 ): Promise<any> {
   console.log("events middleware");
   const context = req.body;
+
   if (context.type === "wall_post_new") {
-    console.log(context.object);
-    const wallPost = new WallAttachment({
-      api: new API({ token: "123" }),
-      payload: context.object,
-    });
-    console.log(wallPost);
-    res.send("ok");
-    return;
+    try {
+      const vkGroupPostsRef = db.collection(
+        `vkGroups/${context.group_id}/posts`
+      );
+      const snapshot = await vkGroupPostsRef
+        .where("id", "==", context.object.id)
+        .get();
+      if (snapshot.empty) {
+        await vkGroupPostsRef.add(context.object);
+      } else {
+        console.log("post duplication");
+      }
+    } catch (err) {
+      console.error(err);
+    }
+    return res.send("ok");
   }
   next();
 }

@@ -10,13 +10,10 @@ async function confirmationMiddleware(
   const context = req.body;
   if (context.type === "confirmation") {
     try {
-      const snapshot = await db
-        .collection("vkGroups")
-        .where("groupId", "==", context.group_id)
-        .get();
-      if (!snapshot.empty) {
-        const vkGroup = snapshot.docs[0].data();
-        return res.send(vkGroup.callbackString);
+      const vkGroupRef = db.collection("vkGroups").doc(`${context.group_id}`);
+      const doc = await vkGroupRef.get();
+      if (doc.exists) {
+        return res.send(doc.data()?.callbackString);
       }
       return res.send("no callbackString found");
     } catch (err) {
