@@ -8,20 +8,30 @@ async function eventsMiddleware(
 ): Promise<any> {
   console.log("events middleware");
   const context = req.body;
-
   if (context.type === "wall_post_new") {
+    const wallPost = context.object;
     try {
-      const vkGroupPostsRef = db.collection(
-        `vkGroups/${context.group_id}/posts`
-      );
-      const snapshot = await vkGroupPostsRef
-        .where("id", "==", context.object.id)
+      // Get group
+      const groupSnap = await db
+        .collection("groups")
+        .doc(`${context.group_id}`)
         .get();
-      if (snapshot.empty) {
-        await vkGroupPostsRef.add(context.object);
-      } else {
-        console.log("post duplication");
+
+      // If group does not exist add new group
+      if (!groupSnap.exists) {
+        await db
+          .collection("groups")
+          .doc(`${context.group_id}`)
+          .set({ groupId: context.group_id, callbackString: "" });
       }
+
+      // Add new post in group
+      await db
+        .collection("groups")
+        .doc(`${context.group_id}`)
+        .collection("posts")
+        .doc(`${wallPost.id}`)
+        .set(wallPost);
     } catch (err) {
       console.error(err);
     }
