@@ -135,8 +135,13 @@ async function formatWebpImagesToJpg(images) {
 }
 
 function cleanTemporary() {
-  fs.rmdir(tempDirLocation, { recursive: true }, (err) => {
-    if (err) error(err);
+  fs.readdir(tempDirLocation, (err, files) => {
+    if (err) throw err;
+    for (const file of files) {
+      fs.unlink(`${tempDirLocation}/${file}`, (err) => {
+        if (err) throw err;
+      });
+    }
   });
 }
 
