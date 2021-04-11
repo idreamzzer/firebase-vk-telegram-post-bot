@@ -6,10 +6,11 @@ const stream = require("stream");
 const FileType = require("file-type");
 const webp = require("webp-converter");
 const fs = require("fs");
+const os = require("os");
 const { promisify } = require("util");
 const pipeline = promisify(stream.pipeline);
 
-const tempDirName = "temp";
+const tempDirLocation = os.tmpdir();
 
 function isPostUnique(post) {
   const postsIdCollection = db.collection("postsId");
@@ -119,9 +120,13 @@ async function formatWebpImagesToJpg(images) {
     let fileType = await FileType.fromStream(downloadStream);
     if (fileType.ext === "webp") {
       // create temp directory
-      fs.mkdir(__dirname + `/${tempDirName}`, { recursive: true }, (err) => {});
-      const webpFileName = `${tempDirName}/temp.webp`;
-      const jpgFileName = `${tempDirName}/temp${i}.jpg`;
+      fs.mkdir(
+        __dirname + `/${tempDirLocation}`,
+        { recursive: true },
+        (err) => {}
+      );
+      const webpFileName = `${tempDirLocation}/temp.webp`;
+      const jpgFileName = `${tempDirLocation}/temp${i}.jpg`;
       // write temp images in directory
       const downloadStream = got.stream(image);
       const fileWriterStream = fs.createWriteStream(webpFileName);
@@ -136,7 +141,7 @@ async function formatWebpImagesToJpg(images) {
 }
 
 function cleanTemporary() {
-  fs.rmdir(__dirname + `/${tempDirName}`, { recursive: true }, (err) => {});
+  fs.rmdir(__dirname + `/${tempDirLocation}`, { recursive: true }, (err) => {});
 }
 
 module.exports = {
