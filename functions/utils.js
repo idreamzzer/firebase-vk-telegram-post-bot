@@ -119,12 +119,6 @@ async function formatWebpImagesToJpg(images) {
     let downloadStream = got.stream(image);
     let fileType = await FileType.fromStream(downloadStream);
     if (fileType.ext === "webp") {
-      // create temp directory
-      fs.mkdir(
-        __dirname + `/${tempDirLocation}`,
-        { recursive: true },
-        (err) => {}
-      );
       const webpFileName = `${tempDirLocation}/temp.webp`;
       const jpgFileName = `${tempDirLocation}/temp${i}.jpg`;
       // write temp images in directory
@@ -141,7 +135,9 @@ async function formatWebpImagesToJpg(images) {
 }
 
 function cleanTemporary() {
-  fs.rmdir(__dirname + `/${tempDirLocation}`, { recursive: true }, (err) => {});
+  fs.rmdir(tempDirLocation, { recursive: true }, (err) => {
+    if (err) error(err);
+  });
 }
 
 module.exports = {
