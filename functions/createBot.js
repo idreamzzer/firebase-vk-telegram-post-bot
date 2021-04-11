@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const { debug, info, error, warn } = require("firebase-functions/lib/logger");
-const { isPostUnique, isAllowedToSend } = require("./utils");
+const { isPostUnique, isAllowedToSend, cleanTemporary } = require("./utils");
 const forwardPost = require("./forwardPost");
 
 function createBot(botConfig) {
@@ -47,8 +47,9 @@ function createBot(botConfig) {
         (await isPostUnique(post)) &&
         (await isAllowedToSend(post, botConfig))
       ) {
-        forwardPost(post, botConfig);
+        await forwardPost(post, botConfig);
       }
+      cleanTemporary();
     }
 
     res.send("ok");

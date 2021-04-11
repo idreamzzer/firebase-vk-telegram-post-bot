@@ -1,6 +1,15 @@
 const { db } = require("./api/firebase");
 const { debug, info, error, warn } = require("firebase-functions/lib/logger");
 const chunk = require("chunk-text");
+const got = require("got");
+const stream = require("stream");
+const FileType = require("file-type");
+const webp = require("webp-converter");
+const fs = require("fs");
+const { promisify } = require("util");
+const pipeline = promisify(stream.pipeline);
+
+const tempDirName = "temp";
 
 function isPostUnique(post) {
   const postsIdCollection = db.collection("postsId");
@@ -101,9 +110,40 @@ function chunkSubstr(str, size, firstElementSize) {
   return chunk(str, size);
 }
 
+async function formatWebpImagesToJpg(images) {
+  for (let i = 0; i < images.length; i++) {
+    let image = images[i];
+
+    // check file type
+    let downloadStream = got.stream(image);
+    let fileType = await FileType.fromStream(downloadStream);
+    if (fileType.ext === "webp") {
+      // create temp directory
+      fs.mkdir(__dirname + `/${tempDirName}`, { recursive: true }, (err) => {});
+      const webpFileName = `${tempDirName}/temp.webp`;
+      const jpgFileName = `${tempDirName}/temp${i}.jpg`;
+      // write temp images in directory
+      const downloadStream = got.stream(image);
+      const fileWriterStream = fs.createWriteStream(webpFileName);
+      await pipeline(downloadStream, fileWriterStream);
+      // format webp image
+      await webp.dwebp(webpFileName, jpgFileName, "-o");
+      // mutate webp image with Buffer of jpg image
+      images[i] = await fs.readFileSync(jpgFileName);
+    }
+  }
+  return images;
+}
+
+function cleanTemporary() {
+  fs.rmdir(__dirname + `/${tempDirName}`, { recursive: true }, (err) => {});
+}
+
 module.exports = {
   isPostUnique,
   isAllowedToSend,
   getPhotosUrlFromAttachments,
   chunkSubstr,
+  formatWebpImagesToJpg,
+  cleanTemporary,
 };
