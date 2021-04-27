@@ -1,6 +1,12 @@
 process.env.NTBA_FIX_319 = 1;
+process.env.NTBA_FIX_350 = 1;
 const Tg = require("node-telegram-bot-api");
-const { chunkSubstr } = require("../utils");
+const {
+  chunkSubstr,
+  cleanTemporary,
+  getPhotosUrlFromAttachments,
+  formatWebpImagesToJpg,
+} = require("../utils");
 
 class Telegram {
   constructor({ botToken, channelId }) {
@@ -9,7 +15,7 @@ class Telegram {
   }
 
   async sendMessageWithMultiplePhotos(text, photosUrl) {
-    const photos = photosUrl.map((url) => ({ type: "photo", media: url }));
+    let photos = photosUrl.map((url) => ({ type: "photo", media: url }));
     if (photos.length > 10) {
       photos = photos.slice(0, 10);
     }
@@ -83,6 +89,21 @@ class Telegram {
         parse_mode: "HTML",
       });
     }
+  }
+
+  async sendPost(post) {
+    if (post.attachments) {
+      let photosUrl = getPhotosUrlFromAttachments(post.attachments);
+      photosUrl = await formatWebpImagesToJpg(photosUrl);
+      if (photosUrl.length > 1) {
+        await this.sendMessageWithMultiplePhotos(post.text, photosUrl);
+      } else if (photosUrl.length === 1) {
+        await this.sendMessageWithPhoto(post.text, photosUrl[0]);
+      }
+      return;
+    }
+    await this.sendLongMessage(post.text);
+    cleanTemporary();
   }
 }
 
