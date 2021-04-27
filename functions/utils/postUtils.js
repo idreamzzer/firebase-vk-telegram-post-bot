@@ -22,12 +22,12 @@ function isPostUnique(post) {
   });
 }
 
-async function isAllowedToSend(post, config) {
+async function isAllowedToSend(post, botName) {
   const restrictionsCollection = db.collection("restrictions");
   let restrictions = null;
   try {
     const restrictionsSnapshot = await restrictionsCollection
-      .where("botName", "==", config.name)
+      .where("botName", "==", botName)
       .get();
     if (!restrictionsSnapshot.empty) {
       restrictions = restrictionsSnapshot.docs[0].data();
@@ -38,28 +38,28 @@ async function isAllowedToSend(post, config) {
 
   if (!restrictions) return true;
 
-  // check for tags
-  if (restrictions.allowedTags || restrictions.deniedTags) {
+  if (restrictions.allowedTags) {
     let text = post.text.toLowerCase();
-    if (restrictions.allowedTags) {
-      for (let tag of restrictions.allowedTags) {
-        if (new RegExp(tag.toLowerCase()).test(text)) {
-          info("allowedTags", tag);
-          return true;
-        }
-      }
-    }
-    if (restrictions.deniedTags) {
-      for (let tag of restrictions.deniedTags) {
-        if (new RegExp(tag.toLowerCase()).test(text)) {
-          info("deniedTags", tag);
-          return false;
-        }
+    for (let tag of restrictions.allowedTags) {
+      if (new RegExp(tag.toLowerCase()).test(text)) {
+        info("allowedTags", tag);
+        return true;
       }
     }
   }
 
-  // check for authors
+  if (restrictions.deniedTags) {
+    let text = post.text.toLowerCase();
+    for (let tag of restrictions.deniedTags) {
+      if (new RegExp(tag.toLowerCase()).test(text)) {
+        info("deniedTags", tag);
+        return false;
+      }
+    }
+  }
+
+  if (!restrictions.restrictAuthors) return true;
+
   if (restrictions.allowedAuthors && post.created_by) {
     info(
       "allowedAuthors",
@@ -68,13 +68,7 @@ async function isAllowedToSend(post, config) {
     return restrictions.allowedAuthors.includes(post.created_by);
   }
 
-  //  check if posts are restricted(boolean)
-  if (typeof restrictions.forwardAllPosts !== "undefined") {
-    info("forwardAllPosts", restrictions.forwardAllPosts);
-    return restrictions.forwardAllPosts;
-  }
-
-  return true;
+  return false;
 }
 
 async function shouldForwardPost(post, config) {

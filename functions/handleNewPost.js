@@ -9,6 +9,7 @@ const {
   //   handleAttachments,
   //   shouldForwardPost,
   cleanTemporary,
+  isAllowedToSend,
 } = require("./utils");
 const config = require("./config");
 
@@ -22,10 +23,12 @@ async function handleNewPost(snap, context) {
 
   const telegram = new Telegram(botConfig.telegram);
 
-  //   if (!shouldForwardPost(post, botConfig)) return;
+  if (!(await isAllowedToSend(post, botConfig.name))) return;
 
-  // handle attachments
   if (post.attachments) {
+    //   if (!shouldForwardPost(post, botConfig)) return;
+
+    // handle attachments
     // post.attachments = handleAttachments(post.attachments);
     let photosUrl = getPhotosUrlFromAttachments(post.attachments);
     photosUrl = await formatWebpImagesToJpg(photosUrl);
