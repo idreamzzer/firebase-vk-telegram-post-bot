@@ -1,6 +1,7 @@
 process.env.NTBA_FIX_319 = 1;
 process.env.NTBA_FIX_350 = 1;
 const Tg = require("node-telegram-bot-api");
+const { debug, info, error, warn } = require("firebase-functions/lib/logger");
 const {
   chunkSubstr,
   cleanTemporary,
@@ -92,7 +93,7 @@ class Telegram {
   }
 
   async sendPost(post) {
-    if (post.attachments) {
+    if (post.attachments?.length) {
       let photosUrl = getPhotosUrlFromAttachments(post.attachments);
       photosUrl = await formatWebpImagesToJpg(photosUrl);
       if (photosUrl.length > 1) {
@@ -100,10 +101,10 @@ class Telegram {
       } else if (photosUrl.length === 1) {
         await this.sendMessageWithPhoto(post.text, photosUrl[0]);
       }
+      // cleanTemporary();
       return;
     }
     await this.sendLongMessage(post.text);
-    cleanTemporary();
   }
 }
 

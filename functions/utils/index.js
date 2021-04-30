@@ -92,9 +92,11 @@ function cleanTemporary() {
   fs.readdir(tempDirLocation, (err, files) => {
     if (err) throw err;
     for (const file of files) {
-      fs.unlink(path.join(tempDirLocation, file), (err) => {
-        if (err) throw err;
-      });
+      let extension = path.extname(file);
+      if (extension === "webp" || extension === "jpg")
+        fs.unlink(path.join(tempDirLocation, file), (err) => {
+          if (err) throw err;
+        });
     }
   });
 }
